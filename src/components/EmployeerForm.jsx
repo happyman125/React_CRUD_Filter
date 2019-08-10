@@ -10,7 +10,7 @@ class EmployeerForm extends Form {
     colors: ["#FF6600", "yellow", "green", "#333333", "red"],
     cityes: ["Toronto","Brampton", "Bolton"],
     branchs: ["Abacus", "Pillsworth"],
-    assigned: ["yes" , "no"]
+    assigned: true
     
 
     // errors: []
