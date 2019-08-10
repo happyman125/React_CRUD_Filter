@@ -1,11 +1,12 @@
 import React from "react";
 
 const Assignees = ({ onItemSelect, filtered, employees }) => {
+
   let assigned = employees.filter(e => e.assigned === true);
   let notAssigned = employees.filter(e => e.assigned !== true);
 
   return (
-    <ul className="list-group">
+    <ul className="list-group row m-1">
       <li
         className={
           filtered.length === employees.length

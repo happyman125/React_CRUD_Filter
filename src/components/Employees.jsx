@@ -10,24 +10,21 @@ import SearchBox from "./SearchBox";
 class Employees extends Component {
   state = {
     employees: [],
-    currentPage: 1,
-    pageSize: 4,
+    pagination: [],
+    props: 1,
+    // currentPage: 1,
+    // pageSize: 4,
     searchQuery: "",
-    path: "Name",
+    path: "name",
     selectedEmployeey: [],
     sortColumn: { path: "name", order: "asc" }
   };
 
-  componentDidMount = async () => {
-    await fetch("http://localhost:8080/api/employees")
-      .then(response => response.json())
-      .then(employees => this.setState({ employees }));
-  };
-
   getPageData = () => {
     const {
-      employees,
       sortColumn,
+      pagination,
+      employees,
       currentPage,
       pageSize,
       searchQuery,
@@ -52,7 +49,11 @@ class Employees extends Component {
 
     const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
 
-    const employeesPerPage = paginate(sorted, currentPage, pageSize);
+    const employeesPerPage = paginate(
+      sorted,
+      pagination.page,
+      pagination.pageSize
+    );
     return { filtered, employeesPerPage };
   };
 
@@ -65,8 +66,14 @@ class Employees extends Component {
     this.setState({ selectedEmployeey: selectedEmployeey, currentPage: 1 });
   };
 
-  handlePageChange = page => {
-    this.setState({ currentPage: page });
+  handlePageChange = currentPage => {
+    let props = this.props.match.params.page;
+    if (!props) props = 1;
+    props = currentPage;
+    let { pagination } = this.state;
+    pagination.page = currentPage;
+
+    this.setState({ pagination });
   };
 
   handleSearch = query => {
@@ -78,23 +85,31 @@ class Employees extends Component {
   };
 
   handleSorting = path => {
-    const  sortColumn  = {...this.state.sortColumn};
-    
+    const sortColumn = { ...this.state.sortColumn };
+
     if (path.length > 1) {
-      (sortColumn.order !== "desc") ? sortColumn.order = "desc" 
-      : sortColumn.order = "asc"
-      
+      sortColumn.order !== "desc"
+        ? (sortColumn.order = "desc")
+        : (sortColumn.order = "asc");
     }
 
-    this.setState({ sortColumn , path });
+    this.setState({ sortColumn, path });
+  };
+
+  componentDidMount = async () => {
+    let props = this.props.match.params.page;
+    if (!props) props = 1;
+
    
+    await fetch(`http://localhost:8080/api/employees/`)
+      .then(response => response.json())
+      .then(employees => this.setState({ ...employees }));
   };
 
   render() {
-   
-    const { employees, searchQuery, sortColumn , path} = this.state;
+    const { searchQuery, employees, sortColumn, path } = this.state;
     const { filtered, employeesPerPage } = this.getPageData();
-
+    
     return (
       <div className="row">
         <div className="col-3">
@@ -106,7 +121,7 @@ class Employees extends Component {
           />
         </div>
         <div className="col">
-          <Link to="/movies/new" className="btn btn-primary btn-lg mb-2">
+          <Link to="/employees/new" className="btn btn-primary btn-lg mb-2">
             New Employer
           </Link>
           <p>
@@ -122,11 +137,7 @@ class Employees extends Component {
             employees={employeesPerPage}
             handleDelite={this.handleDelite}
           />
-          <Pagination
-            {...this.state}
-            itemCount={filtered.length}
-            onPageChange={this.handlePageChange}
-          />
+          <Pagination {...this.state} onPageChange={this.handlePageChange} />
         </div>
       </div>
     );

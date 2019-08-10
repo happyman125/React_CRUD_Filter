@@ -10,7 +10,7 @@ const TableBody = ({ employees, handleDelite }) => {
         <tr key={employee.id}>
           <td style={{ backgroundColor: employee.color }} />
           <td>
-            <Link to={`/employees/${employee.id}`}>{employee.name}</Link>
+            <Link to={`/employees/view/${employee.id}`}>{employee.name}</Link>
           </td>
           <td>{employee.profession}</td>
           <td>{employee.city}</td>
