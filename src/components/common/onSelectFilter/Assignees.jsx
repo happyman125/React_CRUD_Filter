@@ -1,9 +1,8 @@
 import React from "react";
 
 const Assignees = ({ onItemSelect, filtered, employees }) => {
-
-  let assigned = employees.filter(e => e.assigned === true);
-  let notAssigned = employees.filter(e => e.assigned !== true);
+  let assigned = employees.filter(e => e.assigned === 1);
+  let notAssigned = employees.filter(e => e.assigned !== 1);
 
   return (
     <ul className="list-group row m-1">

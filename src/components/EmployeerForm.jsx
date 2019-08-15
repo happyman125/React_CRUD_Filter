@@ -1,5 +1,5 @@
 import React from "react";
-import Form from "./Form";
+import Form from "./common/Form";
 import Joi from "joi";
 
 class EmployeerForm extends Form {
@@ -30,24 +30,30 @@ class EmployeerForm extends Form {
       .required()
       .label("Name"),
     code: Joi.string()
+      .min(3)
+      .max(10)
       .required()
       .label("Code"),
     color: Joi.string()
+      .min(3)
+      .max(20)
       .required()
       .label("Color"),
     profession: Joi.string()
-      .min(0)
+      .min(3)
       .max(50)
       .label("Profession"),
     city: Joi.string()
-      .min(0)
+      .min(3)
       .max(50)
       .label("City"),
     branch: Joi.string()
-      .min(0)
+      .min(1)
       .max(50)
       .label("Branch"),
-    assigned: Joi.bool().label("Assigned")
+    assigned: Joi.boolean()
+      .required()
+      .label("Assigned")
   };
 
   handleClick = e => {
@@ -58,18 +64,15 @@ class EmployeerForm extends Form {
   componentDidMount = async () => {
     let employeeId = this.props.match.params.id;
     if (!employeeId) return;
-
     await fetch(`http://localhost:8080/api/employees/view/${employeeId}`)
       .then(response => response.json())
       .then(employees => this.getEmployeerById(employees));
   };
 
   getEmployeerById(employee) {
-    let data;
-
     if (!employee) return this.props.history.replace("/not-found");
 
-    data = {
+    let data = {
       name: employee.name,
       code: employee.code,
       profession: employee.profession,
@@ -82,10 +85,20 @@ class EmployeerForm extends Form {
     this.setState({ data });
   }
 
+  //Form submit
   async doSubmit() {
+    let id = this.props.match.params.id;
+    let {
+      name,
+      code,
+      profession,
+      color,
+      city,
+      branch,
+      assigned
+    } = this.state.data;
 
-    let {name, code, profession, color, city, branch, assigned} = this.state.data
-    let item  = {
+    let item = {
       name: name,
       code: code,
       profession: profession,
@@ -93,16 +106,35 @@ class EmployeerForm extends Form {
       city: city,
       branch: branch,
       assigned: Boolean(assigned)
+    };
+
+    //If ID, Update the exists emplyeer
+    //Else, Save new employeer
+    if (id) {
+      await fetch(`http://localhost:8080/api/employees/${id}`, {
+        method: "put",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ user: item })
+      });
+    } else {
+      await fetch(`http://localhost:8080/api/employees/`, {
+        method: "post",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ user: item })
+      });
     }
-    
-       fetch(`http://localhost:8080/api/employees/`, {method: 'post', body: item})
-    .then(response => console.log(response))
-    
 
     this.props.history.push("/employees");
   }
 
   render() {
+    let id = this.props.match.params.id;
     return (
       <form onSubmit={this.handleSubmit}>
         {this.renderInput("name", "Name")}
@@ -112,7 +144,7 @@ class EmployeerForm extends Form {
         {this.renderSelect("city", "City", this.state.cityes)}
         {this.renderSelect("branch", "Branch", this.state.branchs)}
         {this.renderRadio("assigned", "Assigned", this.state.assigned)}
-        {this.renderButton("Save")}
+        {this.renderButton("Save", "Update", id)}
       </form>
     );
   }

@@ -9,6 +9,6 @@ ORM = bookshelf(knex({
   useNullAsDefault: true,
 }));
 
-ORM.plugin('pagination');
+ORM.plugin('bookshelf-joi-validator');
 
 module.exports = ORM;

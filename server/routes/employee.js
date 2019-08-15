@@ -4,18 +4,14 @@ const Employee = require("../models/employee");
 
 // List all users
 router.get(
-  "/:page?",
+  "/",
   callAsync(async (req, res) => {
-    let result = await Employee.fetchPage({
-      pageSize: 7,
-      page: req.params.page || 1
-    });
+    let result = await Employee.fetchAll();
     if (result.isEmpty()) {
       res.status(404).json({ message: "Empty set" });
     } else {
       res.json({
-        employees: result.models,
-        pagination: result.pagination
+        employees: result.models
       });
     }
   })

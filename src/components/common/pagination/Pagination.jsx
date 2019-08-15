@@ -3,9 +3,9 @@ import _ from "lodash";
 
 class Pagination extends Component {
   render() {
-    const { onPageChange, pagination } = this.props;
+    const { itemCount, pageSize, currentPage, onPageChange } = this.props;
 
-    const pagesCount = Math.ceil(pagination.rowCount / pagination.pageSize);
+    const pagesCount = Math.ceil(itemCount / pageSize);
     if (pagesCount === 1) return null;
     const pages = _.range(1, pagesCount + 1);
 
@@ -16,7 +16,7 @@ class Pagination extends Component {
             <li
               key={page}
               className={
-                page === pagination.page ? "page-item active" : "page-item"
+                page === currentPage ? "page-item active" : "page-item"
               }
             >
               <a className="page-link" onClick={() => onPageChange(page)}>
