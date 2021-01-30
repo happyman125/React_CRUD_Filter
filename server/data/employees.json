@@ -42,7 +42,7 @@
   {
     "id": 5,
     "name": "Chris Bosh",
-    "code": "F104",
+    "code": "F104", 
     "profession": "Drywall Installer",
     "color": "#FF6600",
     "city": "Brampton",

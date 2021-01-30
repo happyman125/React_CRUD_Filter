@@ -1,41 +1,32 @@
-import React from 'react';
+import React from "react";
+import { Route, Switch, Redirect } from "react-router-dom";
+import Employees from "./components/Employees";
+import NavBar from "./components/NavBar";
+import PageNotFound from "./components/PageNotFound";
+import EmployeerForm from "./components/EmployeerForm";
 
 class App extends React.Component {
-  state = {
+  state={
     employees: []
   }
-  
-  componentWillMount = () => {
-    fetch('http://localhost:8080/api/employees')
-      .then(response => response.json())
-      .then(employees => this.setState({ employees }))
-  }
-
   render() {
-    const {
-      employees
-    } = this.state;
-
-    console.log(this.state);
-
     return (
-      <div className="App">
-        <h1>Plexxis Employees</h1>
-        {
-          employees.map(employee => (
-            <div key={employee.id}>
-              {
-                Object.keys(employee).map(key => 
-                  <span key={key}>
-                    { key }:
-                    { employee[key] } 
-                  </span>
-                )
-              }
-            </div>
-          ))
-        }
-      </div>
+      <React.Fragment>
+        <NavBar />
+        <main className="container">
+          <Switch>
+          <Route path="/employees/:id" exact component={EmployeerForm} />
+            <Route
+              path="/employees"
+              exact
+              render={props => <Employees {...props} />}
+            />
+            <Redirect from="/" exact to="/employees" />
+            <Route path="/not-found" exact component={PageNotFound} />
+            <Redirect to="/not-found" />
+          </Switch>
+        </main>
+      </React.Fragment>
     );
   }
 }
