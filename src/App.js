@@ -6,21 +6,16 @@ import PageNotFound from "./components/PageNotFound";
 import EmployeerForm from "./components/EmployeerForm";
 
 class App extends React.Component {
-  state={
-    employees: []
-  }
+
   render() {
     return (
       <React.Fragment>
         <NavBar />
         <main className="container">
           <Switch>
-          <Route path="/employees/:id" exact component={EmployeerForm} />
-            <Route
-              path="/employees"
-              exact
-              render={props => <Employees {...props} />}
-            />
+            <Route path="/employees/view/:id" component={EmployeerForm} />
+            <Route path="/employees/new" component={EmployeerForm} />
+            <Route path="/employees" component={Employees} />
             <Redirect from="/" exact to="/employees" />
             <Route path="/not-found" exact component={PageNotFound} />
             <Redirect to="/not-found" />
