@@ -14,32 +14,26 @@ class TableHeader extends Component {
   };
 
   render() {
-    let { onSort} = this.props;
+    let { onSort } = this.props;
 
     return (
-      <thead >
+      <thead>
         <tr>
           <th scope="col " />
-          <th onClick={() => onSort("Name")} scope="col" className="clickable">
-            Name {this.renderSortIcon("Name")}
+          <th onClick={() => onSort("name")} scope="col" className="clickable">
+            Name {this.renderSortIcon("name")}
           </th>
           <th
-            onClick={() => onSort("Profession")}
+            onClick={() => onSort("profession")}
             scope="col"
             className="clickable"
           >
-            Profession {this.renderSortIcon("Profession")}
+            Profession {this.renderSortIcon("profession")}
           </th>
-          <th onClick={() => onSort("City")} scope="col" className="clickable">
-            City {this.renderSortIcon("City")}
+          <th onClick={() => onSort("city")} scope="col" className="clickable">
+            City {this.renderSortIcon("city")}
           </th>
-          <th
-            onClick={() => onSort("Branch")}
-            scope="col"
-            className="clickable"
-          >
-            Branch {this.renderSortIcon("Branch")}
-          </th>
+          <th scope="col">Branch</th>
           <th scope="col" />
         </tr>
       </thead>

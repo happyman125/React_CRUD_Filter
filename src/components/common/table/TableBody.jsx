@@ -1,14 +1,16 @@
 import React from "react";
-
-import Button from "./Button";
+import Delete from "../Delete";
 import { Link } from "react-router-dom";
+import Edit from "../Edit";
 
 const TableBody = ({ employees, handleDelite }) => {
   return (
     <tbody>
       {employees.map(employee => (
         <tr key={employee.id}>
-          <td style={{ backgroundColor: employee.color }} />
+          <td>
+            <i style={{ color: employee.color }} className="fas fa-circle" />
+          </td>
           <td>
             <Link to={`/employees/view/${employee.id}`}>{employee.name}</Link>
           </td>
@@ -16,13 +18,13 @@ const TableBody = ({ employees, handleDelite }) => {
           <td>{employee.city}</td>
           <td>{employee.branch}</td>
           <td>
-            <Button handleDelite={handleDelite} id={employee.id} />
+            <Edit {...employee} />
+            <Delete handleDelite={handleDelite} id={employee.id} />
           </td>
         </tr>
       ))}
     </tbody>
   );
 };
-
 
 export default TableBody;

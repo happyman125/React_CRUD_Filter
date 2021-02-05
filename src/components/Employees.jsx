@@ -2,18 +2,17 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import _ from "lodash";
 import { paginate } from "../utils/paginate";
-import Table from "./Table";
-import Assignees from "./Assignees";
-import Pagination from "./Pagination";
-import SearchBox from "./SearchBox";
+import Table from "./common/table/Table";
+import Assignees from "./common/onSelectFilter/Assignees";
+import Pagination from "./common/pagination/Pagination";
+import SearchBox from "./common/searchFilter/SearchBox";
 
 class Employees extends Component {
   state = {
     employees: [],
-    pagination: [],
     props: 1,
-    // currentPage: 1,
-    // pageSize: 4,
+    currentPage: 1,
+    pageSize: 7,
     searchQuery: "",
     path: "name",
     selectedEmployeey: [],
@@ -23,7 +22,6 @@ class Employees extends Component {
   getPageData = () => {
     const {
       sortColumn,
-      pagination,
       employees,
       currentPage,
       pageSize,
@@ -49,31 +47,35 @@ class Employees extends Component {
 
     const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
 
-    const employeesPerPage = paginate(
-      sorted,
-      pagination.page,
-      pagination.pageSize
-    );
+    const employeesPerPage = paginate(sorted, currentPage, pageSize);
     return { filtered, employeesPerPage };
   };
 
-  handleDelite = id => {
-    let employees = this.state.employees.filter(empoyee => empoyee.id !== id);
-    this.setState({ employees });
+  //Delete employeer by Id & update the state
+  handleDelite = async id => {
+    await fetch(`http://localhost:8080/api/employees/${id}`, {
+      method: "delete"
+    }).then(async () => {
+      await fetch(`http://localhost:8080/api/employees/`, {
+        method: "get"
+      })
+        .then(response => response.json())
+        .then(employees => {
+          this.setState({ ...employees });
+        });
+    });
   };
 
   handleEmployeesSelect = selectedEmployeey => {
-    this.setState({ selectedEmployeey: selectedEmployeey, currentPage: 1 });
+    this.setState({
+      selectedEmployeey: selectedEmployeey,
+      searchQuery: "",
+      currentPage: 1
+    });
   };
 
-  handlePageChange = currentPage => {
-    let props = this.props.match.params.page;
-    if (!props) props = 1;
-    props = currentPage;
-    let { pagination } = this.state;
-    pagination.page = currentPage;
-
-    this.setState({ pagination });
+  handlePageChange = page => {
+    this.setState({ currentPage: page });
   };
 
   handleSearch = query => {
@@ -87,20 +89,14 @@ class Employees extends Component {
   handleSorting = path => {
     const sortColumn = { ...this.state.sortColumn };
 
-    if (path.length > 1) {
-      sortColumn.order !== "desc"
-        ? (sortColumn.order = "desc")
-        : (sortColumn.order = "asc");
-    }
+    sortColumn.order !== "desc"
+      ? (sortColumn.order = "desc")
+      : (sortColumn.order = "asc");
 
     this.setState({ sortColumn, path });
   };
 
   componentDidMount = async () => {
-    let props = this.props.match.params.page;
-    if (!props) props = 1;
-
-   
     await fetch(`http://localhost:8080/api/employees/`)
       .then(response => response.json())
       .then(employees => this.setState({ ...employees }));
@@ -109,7 +105,7 @@ class Employees extends Component {
   render() {
     const { searchQuery, employees, sortColumn, path } = this.state;
     const { filtered, employeesPerPage } = this.getPageData();
-    
+
     return (
       <div className="row">
         <div className="col-3">
@@ -137,7 +133,11 @@ class Employees extends Component {
             employees={employeesPerPage}
             handleDelite={this.handleDelite}
           />
-          <Pagination {...this.state} onPageChange={this.handlePageChange} />
+          <Pagination
+            {...this.state}
+            onPageChange={this.handlePageChange}
+            itemCount={filtered.length}
+          />
         </div>
       </div>
     );

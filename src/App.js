@@ -1,12 +1,11 @@
 import React from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import Employees from "./components/Employees";
-import NavBar from "./components/NavBar";
+import NavBar from "./components/common/navbar/NavBar";
 import PageNotFound from "./components/PageNotFound";
 import EmployeerForm from "./components/EmployeerForm";
 
 class App extends React.Component {
-
   render() {
     return (
       <React.Fragment>
