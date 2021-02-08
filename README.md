@@ -1,4 +1,20 @@
 # Plexxis Interview Exercise
+
+
+![fullstack-js-crud-exercise-2-screenshot](https://user-images.githubusercontent.com/34585907/52982000-6d731f80-33b1-11e9-9dfa-81669ae721d0.gif)
+
+1. I used Bookshelf for database SQLite3 and Express.js for REST API
+2. On server-side I used the validation package bookshelf-joi-validator
+3. For front-end I used the component library – Bootstrap, for vector icons I used Font Awesome
+4. On front-end I used the validation package Joi
+
+- In this version I built the search by name, the filter (Employees assigned and non assigned) and sort by name, profession and city.
+
+- In this version I focused my effort on validation of data on front-end and-back-end and on creating the custom components for all applications.
+
+_To start application, please run command: node server/seed.js_
+
+
 ## Requirements
 Create a simple but __impressive__ (looks good, works well, has intuitive design, etc.) CRUD application that can do the following:
 
